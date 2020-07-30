@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        form{
+            width:270px;
+        }
+        input{
+            width: 70%;
+            background: #eee;
+        }
+        input:focus{
+            background: #fff;
+        }
+        form{
+            padding: 0 12px 12px;
+        }
+        label{
+            display: block;
+            padding-bottom:12px;
+        }
+        .label-text{
+            width: 30%;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="wrap">
+        <div id="header">
+            <div style="float: right;padding-top: 24px">2009/11/20</div>
+            <h1>旅游信息管理系统</h1>
+        </div>
+        <div id="header-bar"></div>
+        <div id="content" style="height: 360px">
+            <img src="../img/timg.jpg" style="float: right;height: 320px">
+            <h2>添加省份</h2>
+            <form action="provincelist.html" method="post">
+                <label>
+                    <div class="label-text">省&emsp;份：</div>
+                    <input type="text" v-model="province.name" name="pname">
+                </label>
+                <label>
+                    <div class="label-text">标&emsp;签：</div>
+                    <input type="text" v-model="province.tags" name="ptag">
+                </label>
+                <button type="submit" @click.prevent="addprovince()">提 交</button>&emsp;
+                <a href="provincelist.html">返回</a>
+            </form>
+        </div>
+        <div id="footer">
+            ABC@126.com
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="../js/vue.js"></script>
+<script src="../js/axios.min.js"></script>
+<script>
+    const app = new Vue({
+        el:"#app",
+        data:{
+            province:{}
+        },
+        methods:{
+                addprovince(){
+                    axios.post("http://localhost:8989/province/add",this.province).then(res=>{
+                            if(res.data.state){
+                                alert(res.data.msg+"点击进去主页");
+                                location.href='./provincelist.html';
+                            }else{
+                                alert("添加省份失败" + res.data.msg);
+                            }
+                    });
+                }
+        },
+        created(){
+
+        }
+    });
+</script>

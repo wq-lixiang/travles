@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        table{
+            width: 100%;
+            margin-bottom: 15px;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        th,td{
+            border: 1px solid #CBD6DE;
+            padding-left: 10px;
+            line-height: 28px;
+        }
+        th{
+            text-align: left;
+            background: linear-gradient(#edf2f5,#dce9f2,#edf2f5);
+            color:#467aa7;
+        }
+        tbody tr:nth-child(even){
+            background: #f2f2f2;
+        }
+        #pages{
+            text-align: center;
+            padding-top: 8px;
+        }
+        .page{
+            min-width: 50px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+<div id="wrap">
+    <div id="header">
+        <div style="float: right;padding-top: 24px">
+            2009/11/20&emsp;
+            <a href="../login.html" style="color:#fff;float: right">安全退出</a>
+        </div>
+        <h1>旅游信息管理系统</h1>
+    </div>
+    <div id="header-bar"></div>
+    <div id="content" style="height: 360px">
+        <h2>省份列表</h2>
+        <table>
+            <thead>
+            <tr>
+                <th width="15%">ID</th>
+                <th width="20%">省份</th>
+                <th width="25%">标签</th>
+                <th width="15%">景点个数</th>
+                <th width="25%">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="province in provinces" :key="province.id">
+                <td v-text="province.id">1</td>
+                <td v-text="province.name">北京市</td>
+                <td v-text="province.tags">首都、天安门</td>
+                <td v-text="province.placecounts">20</td>
+                <td>
+                    <a href="javascript:;" @click="deleteProvince(province.id)">删除省份</a>
+                    <a :href="'../viewspot/viewspotlist.html?id=' + province.id">景点列表</a>
+                    <a :href="'./updateprovince.html?id='+province.id">修改省份</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <a href="addprovince.html">
+            <button type="button">添加省份</button>
+        </a>
+        <div id="pages">
+            <a href="javascript:;" class="page" v-if="page > 1" @click="findAll(page-1)">&lt;上一页</a>
+            <a href="javascript:;" class="page" v-for="index in totalPage" @click="findAll(index)" v-text="index">1</a>
+            <a href="javascript:;" class="page" v-if="page < totalPage" @click="findAll(page+1)">下一页&gt;</a>
+        </div>
+    </div>
+    <div id="footer">
+        ABC@126.com
+    </div>
+</div>
+</div>
+</body>
+</html>
+<script src="../js/vue.js"></script>
+<script src="../js/axios.min.js"></script>
+<script>
+    const app = new Vue({
+        el:"#app",
+        data:{
+            provinces:[],
+            page:1,
+            rows:4,
+            totalPage : 0,
+            total : 0
+        },
+        methods:{
+            deleteProvince(id){
+                axios.get("http://localhost:8989/province/delete?id=" + id).then(res=>{
+                   if(res.data.state){
+                        alert("删除省份成功");
+                        location.reload(true);
+                   }else{
+                       alert(res.data.msg);
+                   }
+                });
+            },
+            findAll(indexpage){
+                if (indexpage) {
+                    this.page = indexpage;
+                }
+                axios.get("http://localhost:8989/province/findByPage?page=" + this.page + "&rows=" + this.rows).then(res =>{
+                        console.log(res.data);
+                        this.provinces = res.data.provinces;
+                        this.page= res.data.page;
+                        this.total=res.data.total;
+                        this.totalPage = res.data.totalPage;
+                })
+            }
+        },
+        created(){
+            this.findAll();
+        }
+    });
+</script>

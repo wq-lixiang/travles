@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        form{
+            width:270px;
+        }
+        input{
+            width: 70%;
+            background: #eee;
+        }
+        input:focus{
+            background: #fff;
+        }
+        form{
+            padding: 0 12px 12px;
+        }
+        label{
+            display: block;
+            padding-bottom:12px;
+        }
+        .label-text{
+            width: 30%;
+            float: left;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <div id="wrap">
+        <div id="header">
+            <div style="float: right;padding-top: 24px">2009/11/20</div>
+            <h1>旅游信息管理系统</h1>
+        </div>
+        <div id="header-bar"></div>
+        <div id="content" style="height: 360px">
+            <img src="../img/timg.jpg" style="float: right;height: 320px">
+            <h2>修改省份</h2>
+            <form action="provincelist.html" method="post">
+                <label>
+                    <div class="label-text">省&emsp;份：</div>
+                    <input type="text" name="pname" v-model="province.name" value="北京市">
+                </label>
+                <label>
+                    <div class="label-text">标&emsp;签：</div>
+                    <input type="text" name="ptag" v-model="province.tags" value="首都、天安门">
+                </label>
+                <button type="submit" @click.prevent="uploadProvince()">提 交</button>&emsp;
+                <a href="provincelist.html">返回</a>
+            </form>
+        </div>
+        <div id="footer">
+            ABC@126.com
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="../js/vue.js"></script>
+<script src="../js/axios.min.js"></script>
+<script>
+    const app = new Vue({
+        el:"#app",
+        data:{
+            id :"",
+            province: {}
+        },
+        methods:{
+            findOne(){
+                axios.get("http://localhost:8989/province/findOne?id=" + this.id).then(res=>{
+                    this.province =  res.data.province;
+                })
+            },
+            uploadProvince(){
+                axios.post("http://localhost:8989/province/upload",this.province).then(res=>{
+                    if(res.data.state){
+                        alert("修改成功跳转到主页");
+                        location.href='./provincelist.html';
+                    }else{
+                        alert(res.data.msg);
+
+                    }
+                })
+            }
+
+        },
+        created(){
+            this.id =  location.href.substring(location.href.indexOf("=")+1);
+            this.findOne()
+        }
+    })
+</script>

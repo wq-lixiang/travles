@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="world.lixiang.travels.dao.ProvinceDao">
+    <insert id="save" parameterType="Province" useGeneratedKeys="true" keyProperty="id">
+        insert into t_province values (#{id},#{name},#{tags},#{placecounts})
+    </insert>
+    <update id="upload" parameterType="Province">
+        update t_province set name = #{name} , tags = #{tags} , placecounts = #{placecounts} where id = #{id}
+    </update>
+    <delete id="delete">
+        delete from t_province where id = #{id}
+    </delete>
+
+    <select id="findByPage" resultType="Province">
+        select * from t_province order by placecounts limit #{start} , #{rows}
+    </select>
+    <select id="findTotals" resultType="Integer">
+        SELECT COUNT(id) FROM t_province;
+    </select>
+    <select id="findOne" resultType="Province" parameterType="String">
+        select * from t_province where id = #{id}
+    </select>
+</mapper>

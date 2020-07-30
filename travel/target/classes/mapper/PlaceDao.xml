@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="world.lixiang.travels.dao.PlaceDao">
+    <!--保存place-->
+    <insert id="save" parameterType="Place" useGeneratedKeys="true" keyProperty="id">
+        insert into t_place values (#{id},#{name},#{picpath},#{hottime},#{hotticket},#{dimticket},#{placedes},#{provinceid})
+    </insert>
+    <!--修改经典信息-->
+    <update  id="update" parameterType="Place">
+        update t_place set
+            name=#{name},
+            picpath=#{picpath},
+            hottime=#{hottime},
+            hotticket=#{hotticket},
+            dimticket=#{dimticket},
+            placedes=#{placedes},
+            provinceid=#{provinceid}
+        where id = #{id}
+    </update>
+    <!--删除景点信息方法-->
+    <delete id="delete" parameterType="String">
+        delete from t_place where id = #{id}
+    </delete>
+
+
+
+    <select id="findAllPage" resultType="Place">
+        select * from t_place  where provinceid = #{provinceId}
+        order by hotticket
+        limit #{start},#{rows}
+    </select>
+    <select id="findByProvinceIdCounts" resultType="Integer">
+        select count(id) from t_place where provinceId = #{provinceId}
+    </select>
+    <!--根据id查询景点信息-->
+    <select id="findOne" parameterType="String" resultType="Place">
+        select
+          id,	name,	picpath,	hottime,	hotticket,	dimticket,	placedes,	provinceid
+        from t_place
+        where id=#{id}
+    </select>
+</mapper>
